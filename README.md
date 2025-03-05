@@ -77,6 +77,12 @@ Then the main document will get transformed into:
                 <p>A second paragraph</p>
                 <p>A third paragraph</p>
             </section>
+            <section>
+                <h2>Another start &amp; match condition</h2>
+                <link rel="include" href="test-include.html" start="p:nth-of-type(2)" match=":not(:nth-of-type(4))">
+                <p>A second paragraph</p>
+                <p>A third paragraph</p>
+            </section>         
         </body>
       </html>
 
