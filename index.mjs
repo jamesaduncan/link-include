@@ -2,6 +2,25 @@ import SelectorSubscriber from "https://jamesaduncan.github.io/selector-subscrib
 
 const LinkInclude = 1;
 
+const RangeCache = {};
+
+class SelectorRange {
+
+    start = "";
+    match = "";
+
+    constructor( start, match ) {
+        this.start = start;
+        this.match = match;
+
+        if (!(start && match)) throw new Error("Invalid SelectorRange constructor.");
+    }
+
+    toString() {
+        return `selector=${this.start}; ${this.match}`
+    }
+}
+
 function addElements( source, nodes ) {
     
     if ( source.hasAttribute('destination') ) {
@@ -20,7 +39,35 @@ function addElements( source, nodes ) {
 
 async function linkLoader( element ) {
     const url = element.getAttribute('href');
-    const response = await fetch(url);
+
+    let ranged = false;
+    const options = {};    
+    if ( element.hasAttribute('start') && element.hasAttribute('match') ) {
+        ranged = new SelectorRange( element.getAttribute('start'), element.getAttribute('match') );
+    }
+
+    if (ranged) {
+        console.log(`going to test if server for ${url} is DOM aware`);
+        if ( !Reflect.has(RangeCache, url) ) { 
+            const test = await fetch(url, { method: 'HEAD' });
+            if ( test.ok ) {
+                if ( test.headers.get('accept-range') ) {
+                    RangeCache[ url ] = true;
+                    options.headers = {
+                        Range: `${ranged}`,
+                    }
+                } else {
+                    console.log("Server is not DOM-aware");
+                }
+            }
+        } else {
+            if ( RangeCache[ url ] ) {
+                options.headers = { Range: `${ranged}` };
+            }
+        }
+    }
+
+    const response = await fetch(url, options);
     if ( response.ok ) {
         const body = await response.text();
         try {
