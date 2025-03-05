@@ -7,7 +7,17 @@
 </head>
 <body>
     <h1>LinkIncluder test</h1>
-    <link rel="include" href="test-include.html">
-    <link rel="include" href="test-include.html" select="p:nth-child(2)">
+    <section>
+        <h2>Include with unspecified selector</h2>
+        <link rel="include" href="test-include.html">
+    </section>
+    <section>
+        <h2>Include with specified selector</h2>        
+        <link rel="include" href="test-include.html" select="p:nth-child(2)">
+    </section>
+    <section>
+        <h2>Include with start and condition</h2>
+        <link rel="include" href="test-include.html" start="p" match=":not(.special)">
+    </section>
 </body>
 </html>
