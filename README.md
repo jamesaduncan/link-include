@@ -102,3 +102,12 @@ Then the main document will get transformed into:
       </html>
 
 
+## TODO
+
+* I want to add support for Range requests DOM-aware servers to only send the included information.
+* This will require developing a DOM-aware server
+* Once Range support is in place for DOM aware servers, I want to add multipart range requests to limit the number of queries.
+
+## Dependencies
+
+* [SelectorSubscriber](https://github.com/jamesaduncan/selector-subscriber)
