@@ -2,8 +2,28 @@
 <html lang="en">
 <head>
     <title>LinkIncluder test</title>
-    <script type="module" src="./index.mjs">
-    </script>
+    <script type="module" src="./index.mjs"></script>    
+    <style>
+        body {
+            font-family: 'Gill Sans', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: normal;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;            
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: normal;
+        }
+    </style>    
 </head>
 <body>
     <h1>LinkIncluder test</h1>
@@ -27,7 +47,7 @@
 
     <section>
         <h2>Another Example with Dynamic Loads and a Table</h2>
-        <link rel="include" href="country-codes.html" select="table thead" destination="table thead">
+        <link rel="include" href="country-codes.html" select="table thead tr" destination="table thead">
         <link rel="include" href="country-codes.html" start="table tbody tr:nth-of-type(2)" match=":not(:nth-of-type(6))" destination="table tbody">
         <table>
             <thead></thead>
