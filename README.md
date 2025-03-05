@@ -31,7 +31,9 @@ When the include is processed, a IncludeComplete event is dispatched to the
 link element. The event has a list of the new elements contained in the detail property,
 and will bubble to parent elements.
 
-For example, if the following document is the main document:
+## Example
+
+### Primary HTML document
 
       <!DOCTYPE html>
       <html lang="en">
@@ -57,14 +59,22 @@ For example, if the following document is the main document:
       </body>
       </html>
 
-And in the file "test-include.html" we have the following data:
+### Data source document
 
-      <p id="included-paragraph">An included piece of HTML</p>
-      <p>A second paragraph</p>
-      <p>A third paragraph</p>
-      <p class="special">A fourth paragraph</p>
+      <!DOCTYPE html>
+      <html>
+          <head>
+              <title>Some Paragraphs</title>
+          </head>
+          <body>
+              <p id="included-paragraph">An included piece of HTML</p>
+              <p>A second paragraph</p>
+              <p>A third paragraph</p>
+              <p class="special">A fourth paragraph</p>
+          </body>
+      </html>
     
-Then the main document will get transformed into:
+### Final document
 
       <html lang="en">
         <head>
