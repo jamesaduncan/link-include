@@ -1,5 +1,19 @@
 # link-include
 
+## Usage
+
+    <head>
+      <script type="module" src="http://path.to/module/index.mjs">
+    </head>
+    <body>
+      <link rel="include" href="http://example.com/data.html">
+      <link rel="include" href="http://example.com/data.html" destination="body">
+      <link rel="include" href="http://example.com/data.html" select="p">
+      <link rel="include" href="http://example.com/data.html" start="p" match="p">
+    </body>
+
+## Introduction
+
 This script enhances an HTML document to ability for link tags with the rel 
 attribute set to _include_ to get processed as client-side includes, pulling the
 document linked to by the URL in href into the current document. By default, 
@@ -9,9 +23,6 @@ element that is included from the linked document.
 
 When an element is added to the document, it is added as the next sibling to the
 link element that includes it.
-
-If the included element has an _id_ attribute, it is noted in the link element's
-_for_ attribute when the include has completed loading.
 
 Finally, the link element can have a _start_ attribute and a _match_ attribute. In
 this case, the first element included will be one matching the _start_ attribute. Sibling
@@ -24,6 +35,11 @@ There are some cases where the link element is not a valid child. For example, a
 element cannot have a link element as a child. To work around this kind of problem, a
 link-include element can specify a destination for the included elements, by providing
 a selector in the _destination_ attribute.
+
+## Identifying added nodes
+
+If the first included element has an _id_ attribute, it is noted in the link element's
+_for_ attribute when the include has completed loading.
 
 ## Events
 

@@ -66,7 +66,7 @@ async function linkLoader( element ) {
                 addElements( element, [ node ]);
             }
         } catch(e) {
-            console.log("", e);
+            console.log("Error trying to process link element", element, e);
         }
     }
 }
