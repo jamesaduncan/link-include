@@ -2,6 +2,22 @@ import SelectorSubscriber from "https://jamesaduncan.github.io/selector-subscrib
 
 const LinkInclude = 1;
 
+function addElements( source, nodes ) {
+    
+    if ( source.hasAttribute('destination') ) {
+        const destination = document.querySelector( source.getAttribute('destination') );
+        nodes.forEach( (node) => destination.appendChild( node ) );
+    } else {
+        source.after( ...nodes );
+    }
+
+    const event    = new CustomEvent("IncludeComplete", {
+        bubbles: true,
+        detail: nodes,                    
+    });
+    source.dispatchEvent( event );
+}
+
 async function linkLoader( element ) {
     const url = element.getAttribute('href');
     const response = await fetch(url);
@@ -30,13 +46,7 @@ async function linkLoader( element ) {
                         node.removeAttribute('id')
                     }
                 })
-                element.after( ...clonedNodes );
-
-                const event    = new CustomEvent("IncludeComplete", {
-                    bubbles: true,
-                    detail: clonedNodes,                    
-                });
-                element.dispatchEvent( event );
+                addElements( element, clonedNodes );
 
             } else {
                 const selector = element.getAttribute('select') || 'body > *'
@@ -53,12 +63,7 @@ async function linkLoader( element ) {
                 }
                 element.after( node );
 
-                const event    = new CustomEvent("IncludeComplete", {
-                    bubbles: true,
-                    detail: [ node ],                    
-                });
-                element.dispatchEvent( event );
-
+                addElements( element, [ node ]);
             }
         } catch(e) {
             console.log("", e);

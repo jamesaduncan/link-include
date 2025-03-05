@@ -18,6 +18,19 @@ this case, the first element included will be one matching the _start_ attribute
 attributes will be included as long as they exist, and continue to match the selector
 in the _match_ attribute.
 
+## Alternate destinations
+
+There are some cases where the link element is not a valid child. For example, a thead
+element cannot have a link element as a child. To work around this kind of problem, a
+link-include element can specify a destination for the included elements, by providing
+a selector in the _destination_ attribute.
+
+## Events
+
+When the include is processed, a IncludeComplete event is dispatched to the
+link element. The event has a list of the new elements contained in the detail property,
+and will bubble to parent elements.
+
 For example, if the following document is the main document:
 
       <!DOCTYPE html>
@@ -79,16 +92,13 @@ Then the main document will get transformed into:
             </section>
             <section>
                 <h2>Another start &amp; match condition</h2>
-                <link rel="include" href="test-include.html" start="p:nth-of-type(2)" match=":not(:nth-of-type(4))">
-                <p>A second paragraph</p>
-                <p>A third paragraph</p>
+                <link rel="include" href="test-include.html" start="p:nth-of-type(2)" match=":not(:nth-of-type(4))" destination="#paras">
+                <div id="paras">
+                  <p>A second paragraph</p>
+                  <p>A third paragraph</p>
+                </div>
             </section>         
         </body>
       </html>
 
-## Events
-
-When the include is processed, a IncludeComplete event is dispatched to the
-link element. The event has a list of the new elements contained in the detail property,
-and will bubble to parent elements.
 
