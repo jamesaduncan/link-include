@@ -24,7 +24,8 @@ class SelectorRange {
 function addElements( source, nodes ) {
     
     if ( source.hasAttribute('destination') ) {
-        const destination = document.querySelector( source.getAttribute('destination') );
+        let destination = document.querySelector( source.getAttribute('destination') );
+        if ( destination.nodeName === "TEMPLATE" ) destination = destination.content;
         nodes.forEach( (node) => destination.appendChild( node ) );
     } else {
         source.after( ...nodes );

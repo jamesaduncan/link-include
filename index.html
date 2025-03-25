@@ -55,5 +55,17 @@
         </table>
     </section>
     <link rel="include" href="test-include.html" select="body > :last-child">
+
+    <section>
+        <h2>Another example, only with a template.</h2>
+
+        <p>
+            Although you won't be able to see it, the next link-include has a destination that is a template. If the link-include destination
+            is a template, then the contents are inserted into the document fragment.            
+        </p>
+        
+        <link rel="include" href="country-codes.html" start="table tbody tr:nth-of-type(2)" match=":not(:nth-of-type(6))" destination="template#foo">    
+        <template id="foo"></template>
+    </section>
 </body>
 </html>
