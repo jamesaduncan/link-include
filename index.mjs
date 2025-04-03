@@ -28,6 +28,7 @@ function addElements( source, nodes ) {
         if ( destination.nodeName === "TEMPLATE" ) destination = destination.content;
         nodes.forEach( (node) => destination.appendChild( node ) );
     } else {
+        console.log("about to add it after...", nodes);
         source.after( ...nodes );
     }
 
@@ -97,21 +98,28 @@ async function linkLoader( element ) {
                 addElements( element, clonedNodes );
 
             } else {
-                const selector = element.getAttribute('select') || 'body > *'
+                if ( element.getAttribute('xpath') ) {
+                    const xpathExpression = element.getAttribute('xpath');
+                    const xpathResult = document.evaluate(xpathExpression, parsedBody, null, 2, null);
+                    const node = document.createTextNode( xpathResult.stringValue );
+                    addElements( element, [ node ]);                    
+                } else {
+                    const selector = element.getAttribute('select') || 'body > *'
 
-                const node = parsedBody.querySelector( selector ).cloneNode( true ) // this gets the first element in the document.
+                    const node = parsedBody.querySelector( selector ).cloneNode( true ) // this gets the first element in the document.
 
-                if (node.hasAttribute('id')) {
-                    const nodeId = node.getAttribute('id')
-                    if ( nodeId && document.getElementById( nodeId ) ) {
-                        node.removeAttribute('id')
-                    } else {
-                        element.setAttribute('for', node.getAttribute('id'));
+                    if (node.hasAttribute('id')) {
+                        const nodeId = node.getAttribute('id')
+                        if ( nodeId && document.getElementById( nodeId ) ) {
+                            node.removeAttribute('id')
+                        } else {
+                            element.setAttribute('for', node.getAttribute('id'));
+                        }
                     }
-                }
-                element.after( node );
+                    element.after( node );
 
-                addElements( element, [ node ]);
+                    addElements( element, [ node ]);
+                }
             }
         } catch(e) {
             console.log("Error trying to process link element", element, e);

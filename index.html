@@ -67,5 +67,12 @@
         <link rel="include" href="country-codes.html" start="table tbody tr:nth-of-type(2)" match=":not(:nth-of-type(6))" destination="template#foo">    
         <template id="foo"></template>
     </section>
+
+    <section>
+        <h2>Another example, only using xpath</h2>
+        <p>
+            I quite liked growing up in <link rel="include" href="country-codes.html" xpath="//tr[@cc='ca']/td[1]/text()">
+        </p>
+    </section>
 </body>
 </html>
