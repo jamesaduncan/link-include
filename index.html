@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <title>LinkIncluder test</title>
+    <script type="module" src="https://jamesaduncan.github.io/dom-inline-example/index.mjs"></script>
     <script type="module" src="./index.mjs"></script>    
     <style>
         body {
@@ -11,7 +12,10 @@
             font-weight: normal;
         }
         table {
-            width: 100%;
+            margin: auto;
+            margin-top: 1em;
+            margin-bottom: 1em;
+            width: 80%;
             border-collapse: collapse;
         }
         th, td {
@@ -20,59 +24,144 @@
             text-align: left;            
         }
         th {
-            background-color: #f2f2f2;
+            background-color: lightblue;
             font-weight: normal;
+        }
+        tbody {
+            background-color: lightgray;
+        }
+        .demo {
+            border: 1px solid #ccc;
+            width: 75%;
+            background-color: darkgrey
+        }
+
+        inline-example {
+                font-family: monospace;
+                display: block;
+                color: #ccc;
+                padding-left: 1em;
+                margin-left: 1em;
+                margin-right: 1em;
+                margin-top: 1em;
+                background-color:black;
+                border: 1px solid #ccc;
+                overflow-x: scroll;
         }
     </style>    
 </head>
 <body>
-    <h1>LinkIncluder test</h1>
+    <h1>Link Include</h1>
+    <p>
+        Often, when I'm working on a web project, I find myself wanting to include content from another file into the current document. I know there have been
+        other attempts to do this, but I wanted to create a simple solution, for me, that would allow me to include content from another file, with the ability to 
+        specify the part of the file I want. I've previously written <a href="https://jamesaduncan.github.io/selector-request/">Selector Request</a>, which allows
+        to fetch a particular part of a document as specified by a URL, and it was a simple matter of building that functionality into a simple element.
+    </p>
+    <p>
+        The <code>link</code> element, which allows you reference other related documents seemed like the appropriate element to use,
+        so I've used <a href="https://jamesaduncan.github.io/selector-subscriber">Selector Subscriber</a> to catch any uses of the <code>link</code> element
+        with a <code>rel="include"</code> attribute.
+    </p>
+    <h2>Examples of Use</h2>
+    
     <section>
-        <h2>Include with unspecified selector</h2>
-        <link rel="include" href="test-include.html">
+        <h2>Basic include</h2>
+        <p>
+            The simplest use of <code>link-include</code> is to include the entire body of another document, like this:
+        </p>
+
+        <section class="demo">
+            <inline-example include="true">
+<link rel="include" href="test-include.html">
+            </inline-example>
+        </section>
+    </section>
+
+    <section>
+        <h2>Include a specific selector</h2>
+        <p>
+            With <a href="https://jamesaduncan.github.io/selector-request/">Selector Request</a> syntax you can also specify a selector to include only a part of the document.
+            In this example, I'll select the second paragraph from the <code>test-include.html</code> file.
+        </p>
+        <section class="demo">
+            <inline-example include="true">
+<link rel="include" href="test-include.html#(selector=p:nth-child(2))">
+            </inline-example>
+        </section>
+    </section>
+
+    <section>
+        <h2>Include with a match condition</h2>
+        <p>
+            By using the <code>match</code> attribute, you can specify a condition that will filter the elements that are included. In this case,
+            the fourth paragraph will be excluded because it has the <code>special</code> class.
+        </p>
+        <section class="demo">
+            <inline-example include="true">
+<link rel="include" href="test-include.html#(selector=p)" match=":not(.special)">
+            </inline-example>
+        </section>  
     </section>
     <section>
-        <h2>Include with specified selector</h2>        
-        <link rel="include" href="test-include.html" select="p:nth-child(2)">
-    </section>
-    <section>
-        <h2>Include with start and match condition</h2>
-        <link rel="include" href="test-include.html" start="p" match=":not(.special)">
-    </section>
-    <section>
-        <h2>Another start & match condition</h2>
-        <link rel="include" href="test-include.html" start="p:nth-of-type(2)" match=":not(:nth-of-type(4))" destination="#paras">
-        <div id="paras"></div>
-    </section>
+        <h2>A start &amp; end condition</h2>
+        <p>
+            The <code>start</code> attribute lets you discard all elements until the first element that matches the selector. You
+            can omit the <code>start</code> attribute, and then all elements before the end will be included.
+        </p>
+        <p>
+            The <code>end</code> attribute lets you discard all elements after that element. You can omit the <code>end</code>
+            attribute, and then all elements after the start will be included.
+        </p>
+        <section class="demo">
+            <inline-example include="true">
+<link rel="include" href="test-include.html#(selector=p)" start="p:nth-of-type(2)" end=":nth-of-type(4)">
+            </inline-example>
+        </section>
+   </section>
 
     <section>
         <h2>Another Example with a Table and a Range</h2>
-        <link rel="include" href="country-codes.html" select="table thead tr" destination="table thead">
-        <link rel="include" href="country-codes.html" start="table tbody tr:nth-of-type(2)" match=":not(:nth-of-type(6))" destination="table tbody">
-        <table>
-            <thead></thead>
-            <tbody></tbody>
-        </table>
+        <p>
+            This exampe uses two seperate includes to pull both the head and body of a table from another document.
+        </p>
+        <section class="demo">
+            <inline-example include="true">
+<link rel="include" href="country-codes.html#(selector=table thead tr)" destination="table thead">
+<link rel="include" href="country-codes.html#(selector=table tbody tr)" start=":nth-of-type(2)" end=":nth-of-type(6)" destination="table tbody">
+<table>
+    <thead></thead>
+    <tbody></tbody>
+</table>
+            </inline-example>
+        </section>
     </section>
-    <link rel="include" href="test-include.html" select="body > :last-child">
 
     <section>
-        <h2>Another example, only with a template.</h2>
-
+        <h2>Include a specific element from another document</h2>
         <p>
-            Although you won't be able to see it, the next link-include has a destination that is a template. If the link-include destination
-            is a template, then the contents are inserted into the document fragment.            
+            In this example, I'm going to include the last child of the body from the <code>test-include.html</code> file.
         </p>
-        
-        <link rel="include" href="country-codes.html" start="table tbody tr:nth-of-type(2)" match=":not(:nth-of-type(6))" destination="template#foo">    
-        <template id="foo"></template>
+        <section class="demo">
+            <inline-example include="true">
+<link rel="include" href="test-include.html#(selector=body > :last-child)">
+            </inline-example> 
+        </section>
     </section>
 
     <section>
         <h2>Another example, only using xpath</h2>
         <p>
-            I quite liked growing up in <link rel="include" href="country-codes.html" xpath="//tr[@cc='ca']/td[1]/text()">
+            Sometimes we need to get the specific text out of the document, rather than the whole node. We can use a little bit 
+            of xpath to do this.
         </p>
+        <section class="demo">
+        <inline-example include="true">
+<p>
+    I quite liked growing up in <link rel="include" href="country-codes.html#(selector=tr[cc='ca'])" xpath="td[1]/text()">
+</p>
+        </inline-example>
+        </section>
     </section>
 </body>
 </html>

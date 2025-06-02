@@ -1,4 +1,5 @@
-import SelectorSubscriber from "https://jamesaduncan.github.io/selector-subscriber/index.mjs";
+import { SelectorSubscriber } from "https://jamesaduncan.github.io/selector-subscriber/index.mjs";
+import { SelectorRequest } from "https://jamesaduncan.github.io/selector-request/index.mjs";
 
 const LinkInclude = 1;
 
@@ -127,6 +128,52 @@ async function linkLoader( element ) {
     }
 }
 
-SelectorSubscriber.subscribe( 'link[rel=include][href]', linkLoader );
+async function linkInclude( element ) {
+    let response = await SelectorRequest.fetch( element.getAttribute('href') );
+
+    if ( element.hasAttribute('start')) {
+        let collecting = false;
+        const startSelector = element.getAttribute('start');
+        response = response.filter( (node) => {
+            if ( node.matches( startSelector ) ) {
+                collecting = true;
+            }
+            return collecting;
+        })
+    }
+
+    if ( element.hasAttribute('end') ) {
+        let collecting = true;
+        const endSelector = element.getAttribute('end');
+        response = response.filter( (node) => {
+            if ( node.matches( endSelector ) ) {
+                collecting = false;                
+            }
+            return collecting;
+        });
+    }
+    
+    if ( element.hasAttribute('match') ) {
+        const matchSelector = element.getAttribute('match');
+        response = response.filter( node => node.matches( matchSelector ) );
+    }
+
+    // maybe this should be a feature of SelectorRequest?
+    if ( element.hasAttribute('xpath') ) {
+        const xpathExpression = element.getAttribute('xpath');
+        console.log(`responses before ${xpathExpression}`, response);
+        response = response.map( (r) => {
+            return document.createTextNode( document.evaluate(xpathExpression, r, null, 2, null).stringValue );
+        });
+        console.log(`responses after ${xpathExpression}`, response);
+    }
+
+    if ( element.hasAttribute('destination') ) {
+        const destination = document.querySelector( element.getAttribute('destination') );
+        destination.append(...response)
+    } else element.after(...response)
+}
+
+SelectorSubscriber.subscribe( 'link[rel=include][href]', linkInclude );
 
 export default LinkInclude;
